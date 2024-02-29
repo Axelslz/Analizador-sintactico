@@ -1,52 +1,52 @@
-start: structures*
-
-structures: var_decl | func_decl | repeat_decl | if_decl | func_main_decl
-
-var_decl: VAR DOLLAR IDENTIFIER EQUAL value SEMICOLON
-
-func_decl: FUNC IDENTIFIER LPAREN parameter_list RPAREN LBRACKET statement* RBRACKET
-    
-repeat_decl: REPEAT LPAREN var_decl SEMICOLON condition SEMICOLON increment RPAREN LBRACKET statement* RBRACKET
-condition: IDENTIFIER OPERATOR value | IDENTIFIER OPERATOR IDENTIFIER
-increment: IDENTIFIER PM
-statement: ECHO LPAREN STRING RPAREN SEMICOLON 
-
-if_decl: IF LPAREN condition RPAREN LBRACKET statement* RBRACKET (ELSE LBRACKET statement* RBRACKET)?
-ELSE: "sino"
-
-func_main_decl: FUNC MAIN LPAREN RPAREN LBRACKET statement* RBRACKET
-
-VAR: "int"
-FUNC: "func"
-REPEAT: "repeat"
-IF: "if"
-MAIN: "main"
-ECHO: "echo"
-DOLLAR: "$"
-SEMICOLON: ";"
-LBRACKET: "{"
-RBRACKET: "}"
-LPAREN: "("
-RPAREN: ")"
-OPERATOR: "<" | ">" | "<=" | ">=" | "!=" | "=="
-PM: "++" | "--" 
-EQUAL: "="
-value: INT         -> int
-    | FLOAT       -> float
-    | BOOLEAN     -> boolean
-    | STRING      -> string
-    | CHAR        -> char
-
-parameter_list: parameter ("," parameter)*
-parameter: type "$" IDENTIFIER
-
-IDENTIFIER: /[a-z][a-z]*/
-INT: /\d+/
-FLOAT: /\d*\.\d+/
-BOOLEAN: "true" | "false"
-STRING: /"([^;()\[\]{}]|\\")*"/
-CHAR: /'([^']|\\')'/
 %import common.WS
 %ignore WS
 
+// Tokens
+INT: "int"
+FUNC: "func"
+REPEAT: "repeat"
+IF: "if"
+ELSE: "else" 
+MAIN: "main"
+ECHO: "echo"
+MAS: "suma"
+SUMA: "+" | "++" 
+RETURN: "return" | "retornar"
+PUNCO: ";"
+ALLAVE: "{"
+CLLAVE: "}"
+APAREN: "("
+CPAREN: ")"
+OPERATOR: "<" | ">"
+IGUAL: "="
+LETRA: /[a-zA-Z][a-zA-Z_0-9]*/
+NUM: /\d+/
+DOLLAR: "$"
+TEXTO: /[a-zA-Z ]+/
+
+
+// Reglas
+inicio: int | func | repeat | if_stmt | func_main
+
+int: INT DOLLAR LETRA IGUAL NUM PUNCO
+func: FUNC MAS APAREN parameter_list* CPAREN ALLAVE return_stmt* CLLAVE
+repeat: REPEAT APAREN int* condition* puma* CPAREN ALLAVE echo_stmt* CLLAVE
+if_stmt: IF APAREN condition* CPAREN ALLAVE statement* CLLAVE ELSE ALLAVE statement* CLLAVE
+func_main: FUNC MAIN APAREN CPAREN ALLAVE outro* CLLAVE
+
+puma: DOLLAR LETRA SUMA 
+statement: ECHO APAREN TEXTO NUM CPAREN PUNCO 
+
+condition: DOLLAR LETRA OPERATOR NUM PUNCO | DOLLAR LETRA OPERATOR NUM
+outro: ECHO APAREN TEXTO CPAREN PUNCO 
+
+echo_stmt: ECHO APAREN (DOLLAR LETRA) CPAREN PUNCO
+return_stmt: RETURN expression PUNCO
+
+parameter_list: (parameter "," parameter)*
+parameter: INT DOLLAR LETRA
+
+var_decl: INT DOLLAR LETRA IGUAL expression PUNCO
+
+expression: DOLLAR LETRA SUMA DOLLAR LETRA
 

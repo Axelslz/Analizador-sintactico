@@ -1,6 +1,6 @@
 # interfaz.py
 from tkinter import *
-from tkinter import scrolledtext
+from tkinter import scrolledtext, messagebox
 from analizador import analizar_entrada
 
 class Interfaz:
@@ -16,9 +16,13 @@ class Interfaz:
         boton_analizar.pack()
 
     def analizar(self):
-        entrada = self.text_area.get("1.0", END)
+        entrada = self.text_area.get("1.0", "end-1c")
         resultado = analizar_entrada(entrada)
-        print(resultado)  # Puedes hacer lo que desees con el resultado
+        
+        if resultado == "Correcto":
+            messagebox.showinfo("Resultado", "La entrada es sintácticamente correcta.")
+        else:
+            messagebox.showinfo("Error", f"Error de sintaxis: {resultado}")
 
 if __name__ == "__main__":
     root = Tk()
